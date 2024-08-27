@@ -1,6 +1,8 @@
 Icon?
 ![iI]con[_a-zA-Z0-9]
 
+src/routes/data.js
+
 node_modules
 
 # Output

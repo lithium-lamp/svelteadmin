@@ -174,7 +174,7 @@
     const hidableCols = ["created_at", "amount", "measurement", "version"];
 </script>
 
-<div>
+<div class="w-full">
     <div class="flex items-center py-4">
         <Input
           class="max-w-sm"
@@ -182,7 +182,6 @@
           type="text"
           bind:value={$filterValue}
         />
-      </div>
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild let:builder>
           <Button variant="outline" class="ml-auto" builders={[builder]}>
@@ -199,6 +198,7 @@
           {/each}
         </DropdownMenu.Content>
       </DropdownMenu.Root>
+    </div>
 <div class="rounded-md border">
     <Table.Root {...$tableAttrs}>
       <Table.Header>

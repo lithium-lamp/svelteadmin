@@ -1,15 +1,21 @@
-<script>import "../app.css";</script>
+<script>
+import "../app.css";
+import { Menu, Sidebar } from "./layoutcomponents";
 
-<nav>
-	<a href="/">Home</a>
-	<a href="/recipies" data-sveltekit-prefetch>Recipies</a>
-	<a href="/recipeingredients" data-sveltekit-prefetch>Recipe ingredients</a>
-	<a href="/ingredients" data-sveltekit-prefetch>Ingredients</a>
-	<a href="/availableitems" data-sveltekit-prefetch>Availableitems</a>
-	<a href="/knownitems" data-sveltekit-prefetch>Knownitems</a>
-	<a href="/tags" data-sveltekit-prefetch>Tags</a>
-	<a href="/itemtypes" data-sveltekit-prefetch>Itemtypes</a>
-	<a href="/measurements" data-sveltekit-prefetch>Measurements</a>
-</nav>
+</script>
 
-<slot></slot>
+<div class="hidden md:block">
+	<Menu />
+	<div class="border-t">
+		<div class="bg-background">
+			<div class="grid lg:grid-cols-5">
+				<Sidebar class="hidden lg:block"/>
+				<div class="col-span-3 lg:col-span-4 lg:border-l">
+					<div class="h-full px-4 py-6 lg:px-8">
+						<slot></slot>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

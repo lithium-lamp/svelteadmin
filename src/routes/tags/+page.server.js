@@ -1,7 +1,7 @@
 import 'dotenv/config'
 
 export const load = async() => {
-  const fetchRecipies = async () => {
+  const fetchTags = async () => {
     const url = `http://localhost:4000/v1/tags`;
     const header_params = { 'Authorization': `Bearer ${process.env.ADMIN_TOKEN}` }
     const res = await fetch(url, { headers: header_params });
@@ -10,7 +10,7 @@ export const load = async() => {
     return [data.tags, data.metadata];
   }
 
-  let [a, b] = await fetchRecipies();
+  let [a, b] = await fetchTags();
 
   return { tags: a, tags_metadata: b};
 }

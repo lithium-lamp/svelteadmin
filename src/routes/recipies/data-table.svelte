@@ -100,6 +100,13 @@
         table.column({
             accessor: "name",
             header: "Name",
+            cell: ({ value }) => {
+                if ((value.length - 3) > 40) {
+                    return value.substring(0, 40) + "...";
+                }
+
+                return value;
+            },
             plugins: {
                 sort: {
                     disable: false,
@@ -112,6 +119,13 @@
         table.column({
             accessor: "description",
             header: "Description",
+            cell: ({ value }) => {
+                if ((value.length - 3) > 40) {
+                    return value.substring(0, 40) + "...";
+                }
+
+                return value;
+            },
             plugins: {
                 sort: {
                     disable: false,
@@ -125,7 +139,11 @@
             accessor: "cooking_steps",
             header: "Cooking steps",
             cell: ({ value }) => {
-              return value.toString();
+                if ((value.toString().length - 3) > 40) {
+                    return value.toString().substring(0, 40) + "...";
+                }
+
+                return value.toString();
             },
             plugins: {
                 sort: {
@@ -230,7 +248,7 @@
       "cook_time_minutes", "portions", "tags", "version"];
 </script>
 
-<div>
+<div class="w-full">
     <div class="flex items-center py-4">
         <Input
           class="max-w-sm"
@@ -238,7 +256,6 @@
           type="text"
           bind:value={$filterValue}
         />
-      </div>
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild let:builder>
           <Button variant="outline" class="ml-auto" builders={[builder]}>
@@ -255,6 +272,7 @@
           {/each}
         </DropdownMenu.Content>
       </DropdownMenu.Root>
+    </div>
 <div class="rounded-md border">
     <Table.Root {...$tableAttrs}>
       <Table.Header>
