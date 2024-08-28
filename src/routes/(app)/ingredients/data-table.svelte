@@ -22,10 +22,11 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import DataTableCheckbox from "./data-table-checkbox.svelte";
 
-    type ItemType = {
+    type Ingredient = {
         id: bigint;
         created_at: number;
         name: string;
+        tags: string[];
         version: number;
     };
     type Metadata = {
@@ -36,14 +37,14 @@
         total_records: number;
     };
 
-    export let itemtypes : ItemType[];
-    export let itemtypes_metadata: Metadata;
+    export let ingredients : Ingredient[];
+    export let ingredients_metadata: Metadata;
 
-    console.log(itemtypes_metadata.current_page + ", " + itemtypes_metadata.page_size + ", " +
-    itemtypes_metadata.first_page + ", " + itemtypes_metadata.last_page + ", " +
-    itemtypes_metadata.total_records);
+    console.log(ingredients_metadata.current_page + ", " + ingredients_metadata.page_size + ", " +
+    ingredients_metadata.first_page + ", " + ingredients_metadata.last_page + ", " +
+    ingredients_metadata.total_records);
 
-    const table = createTable(readable(itemtypes), {
+    const table = createTable(readable(ingredients), {
         page: addPagination(),
         sort: addSortBy(),
         filter: addTableFilter({
@@ -105,6 +106,21 @@
             },
         }),
         table.column({
+            accessor: "tags",
+            header: "Tags",
+            cell: ({ value }) => {
+              return value.toString();
+            },
+            plugins: {
+                sort: {
+                    disable: false,
+                },
+                filter: {
+                    exclude: false,
+                },
+            },
+        }),
+        table.column({
             accessor: "version",
             header: "Version",
             plugins: {
@@ -155,7 +171,7 @@
         .filter(([, hide]) => !hide)
         .map(([id]) => id);
 
-    const hidableCols = ["created_at", "name", "version"];
+    const hidableCols = ["created_at", "name", "tags", "version"];
 </script>
 
 <div class="w-full">
@@ -201,7 +217,8 @@
                         <div class="text-right">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "created_at" || cell.id === "name"}
+                    {:else if cell.id === "created_at" || cell.id === "name"
+                    || cell.id === "tags"}
                       <Button variant="ghost" on:click={props.sort.toggle}>
                           <Render of={cell.render()} />
                           <ArrowUpDown class={"ml-2 h-4 w-4"} />
@@ -230,7 +247,8 @@
                         <div class="text-right font-medium">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "created_at" || cell.id === "name"}
+                    {:else if cell.id === "created_at" || cell.id === "name"
+                    || cell.id === "tags"}
                         <div class="capitalize">
                             <Render of={cell.render()} />
                         </div>
@@ -251,6 +269,24 @@
         {Object.keys($selectedDataIds).length} of{" "}
         {$rows.length} row(s) selected.
     </div>
+    <Button
+        variant="additive"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        >Add</Button
+    >
+    <Button
+        variant="update"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        disabled={!$hasPreviousPage}>Update</Button
+    >
+    <Button
+      variant="destructive"
+      size="sm"
+      on:click={() => ($pageIndex = $pageIndex - 1)}
+      disabled={!$hasPreviousPage}>Delete</Button
+    >
     <Button
       variant="outline"
       size="sm"

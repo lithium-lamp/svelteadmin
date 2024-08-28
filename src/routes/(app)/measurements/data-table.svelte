@@ -22,11 +22,10 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import DataTableCheckbox from "./data-table-checkbox.svelte";
 
-    type Ingredient = {
+    type Measurement = {
         id: bigint;
         created_at: number;
         name: string;
-        tags: string[];
         version: number;
     };
     type Metadata = {
@@ -37,14 +36,14 @@
         total_records: number;
     };
 
-    export let ingredients : Ingredient[];
-    export let ingredients_metadata: Metadata;
+    export let measurements : Measurement[];
+    export let measurements_metadata: Metadata;
 
-    console.log(ingredients_metadata.current_page + ", " + ingredients_metadata.page_size + ", " +
-    ingredients_metadata.first_page + ", " + ingredients_metadata.last_page + ", " +
-    ingredients_metadata.total_records);
+    console.log(measurements_metadata.current_page + ", " + measurements_metadata.page_size + ", " +
+    measurements_metadata.first_page + ", " + measurements_metadata.last_page + ", " +
+    measurements_metadata.total_records);
 
-    const table = createTable(readable(ingredients), {
+    const table = createTable(readable(measurements), {
         page: addPagination(),
         sort: addSortBy(),
         filter: addTableFilter({
@@ -82,18 +81,6 @@
             },
         }),
         table.column({
-            accessor: "name",
-            header: "Name",
-            plugins: {
-                sort: {
-                    disable: false,
-                },
-                filter: {
-                    exclude: false,
-                },
-            },
-        }),
-        table.column({
             accessor: "created_at",
             header: "Created at",
             plugins: {
@@ -106,11 +93,8 @@
             },
         }),
         table.column({
-            accessor: "tags",
-            header: "Tags",
-            cell: ({ value }) => {
-              return value.toString();
-            },
+            accessor: "name",
+            header: "Name",
             plugins: {
                 sort: {
                     disable: false,
@@ -171,7 +155,7 @@
         .filter(([, hide]) => !hide)
         .map(([id]) => id);
 
-    const hidableCols = ["name", "created_at", "tags", "version"];
+    const hidableCols = ["created_at", "name", "version"];
 </script>
 
 <div class="w-full">
@@ -217,8 +201,7 @@
                         <div class="text-right">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "name" || cell.id === "created_at"
-                    || cell.id === "tags"}
+                    {:else if cell.id === "created_at" || cell.id === "name"}
                       <Button variant="ghost" on:click={props.sort.toggle}>
                           <Render of={cell.render()} />
                           <ArrowUpDown class={"ml-2 h-4 w-4"} />
@@ -247,8 +230,7 @@
                         <div class="text-right font-medium">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "name" || cell.id === "created_at"
-                    || cell.id === "tags"}
+                    {:else if cell.id === "created_at" || cell.id === "name"}
                         <div class="capitalize">
                             <Render of={cell.render()} />
                         </div>
@@ -269,6 +251,24 @@
         {Object.keys($selectedDataIds).length} of{" "}
         {$rows.length} row(s) selected.
     </div>
+    <Button
+        variant="additive"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        >Add</Button
+    >
+    <Button
+        variant="update"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        >Update</Button
+    >
+    <Button
+      variant="destructive"
+      size="sm"
+      on:click={() => ($pageIndex = $pageIndex - 1)}
+      >Delete</Button
+    >
     <Button
       variant="outline"
       size="sm"

@@ -3,7 +3,7 @@
 
 	export let data;
 </script>
-   
+
 <div class="container mx-auto py-10">
     {#await data}
         <p>f</p>

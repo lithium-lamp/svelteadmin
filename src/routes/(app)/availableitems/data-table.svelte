@@ -22,11 +22,12 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import DataTableCheckbox from "./data-table-checkbox.svelte";
 
-    type Tag = {
+    type Availableitem = {
         id: bigint;
+        knownitems_id: bigint;
         created_at: number;
-        itemtype: bigint;
-        name: string;
+        expiration_at: number;
+        container_size: number;
         version: number;
     };
     type Metadata = {
@@ -37,14 +38,14 @@
         total_records: number;
     };
 
-    export let tags : Tag[];
-    export let tags_metadata: Metadata;
+    export let availableitems : Availableitem[];
+    export let availableitems_metadata: Metadata;
 
-    console.log(tags_metadata.current_page + ", " + tags_metadata.page_size + ", " +
-    tags_metadata.first_page + ", " + tags_metadata.last_page + ", " +
-    tags_metadata.total_records);
+    console.log(availableitems_metadata.current_page + ", " + availableitems_metadata.page_size + ", " +
+    availableitems_metadata.first_page + ", " + availableitems_metadata.last_page + ", " +
+    availableitems_metadata.total_records);
 
-    const table = createTable(readable(tags), {
+    const table = createTable(readable(availableitems), {
         page: addPagination(),
         sort: addSortBy(),
         filter: addTableFilter({
@@ -82,6 +83,18 @@
             },
         }),
         table.column({
+            accessor: "knownitems_id",
+            header: "Knownitems id",
+            plugins: {
+                sort: {
+                    disable: false,
+                },
+                filter: {
+                    exclude: false,
+                },
+            },
+        }),
+        table.column({
             accessor: "created_at",
             header: "Created at",
             plugins: {
@@ -94,8 +107,8 @@
             },
         }),
         table.column({
-            accessor: "itemtype",
-            header: "Item type",
+            accessor: "expiration_at",
+            header: "Expiration at",
             plugins: {
                 sort: {
                     disable: false,
@@ -106,8 +119,8 @@
             },
         }),
         table.column({
-            accessor: "name",
-            header: "Name",
+            accessor: "container_size",
+            header: "Container size",
             plugins: {
                 sort: {
                     disable: false,
@@ -168,7 +181,7 @@
         .filter(([, hide]) => !hide)
         .map(([id]) => id);
 
-    const hidableCols = ["created_at", "itemtype", "name", "version"];
+    const hidableCols = ["knownitems_id", "created_at", "expiration_at", "container_size", "version"];
 </script>
 
 <div class="w-full">
@@ -214,8 +227,8 @@
                         <div class="text-right">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "created_at" || cell.id === "itemtype"
-                    || cell.id === "name"}
+                    {:else if cell.id === "knownitems_id" || cell.id === "created_at"
+                    || cell.id === "expiration_at" || cell.id === "container_size"}
                       <Button variant="ghost" on:click={props.sort.toggle}>
                           <Render of={cell.render()} />
                           <ArrowUpDown class={"ml-2 h-4 w-4"} />
@@ -244,8 +257,8 @@
                         <div class="text-right font-medium">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "created_at" || cell.id === "itemtype"
-                    || cell.id === "name"}
+                    {:else if cell.id === "knownitems_id" || cell.id === "created_at"
+                    || cell.id === "expiration_at" || cell.id === "container_size"}
                         <div class="capitalize">
                             <Render of={cell.render()} />
                         </div>
@@ -266,6 +279,24 @@
         {Object.keys($selectedDataIds).length} of{" "}
         {$rows.length} row(s) selected.
     </div>
+    <Button
+        variant="additive"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        >Add</Button
+    >
+    <Button
+        variant="update"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        disabled={!$hasPreviousPage}>Update</Button
+    >
+    <Button
+      variant="destructive"
+      size="sm"
+      on:click={() => ($pageIndex = $pageIndex - 1)}
+      disabled={!$hasPreviousPage}>Delete</Button
+    >
     <Button
       variant="outline"
       size="sm"

@@ -248,6 +248,8 @@
       , "version"];
 </script>
 
+
+
 <div class="w-full">
     <div class="flex items-center py-4">
         <Input
@@ -347,6 +349,24 @@
         {Object.keys($selectedDataIds).length} of{" "}
         {$rows.length} row(s) selected.
     </div>
+    <Button
+        variant="additive"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        >Add</Button
+    >
+    <Button
+        variant="update"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        disabled={!$hasPreviousPage}>Update</Button
+    >
+    <Button
+      variant="destructive"
+      size="sm"
+      on:click={() => ($pageIndex = $pageIndex - 1)}
+      disabled={!$hasPreviousPage}>Delete</Button
+    >
     <Button
       variant="outline"
       size="sm"

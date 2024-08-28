@@ -22,7 +22,7 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import DataTableCheckbox from "./data-table-checkbox.svelte";
 
-    type Measurement = {
+    type ItemType = {
         id: bigint;
         created_at: number;
         name: string;
@@ -36,14 +36,14 @@
         total_records: number;
     };
 
-    export let measurements : Measurement[];
-    export let measurements_metadata: Metadata;
+    export let itemtypes : ItemType[];
+    export let itemtypes_metadata: Metadata;
 
-    console.log(measurements_metadata.current_page + ", " + measurements_metadata.page_size + ", " +
-    measurements_metadata.first_page + ", " + measurements_metadata.last_page + ", " +
-    measurements_metadata.total_records);
+    console.log(itemtypes_metadata.current_page + ", " + itemtypes_metadata.page_size + ", " +
+    itemtypes_metadata.first_page + ", " + itemtypes_metadata.last_page + ", " +
+    itemtypes_metadata.total_records);
 
-    const table = createTable(readable(measurements), {
+    const table = createTable(readable(itemtypes), {
         page: addPagination(),
         sort: addSortBy(),
         filter: addTableFilter({
@@ -251,6 +251,24 @@
         {Object.keys($selectedDataIds).length} of{" "}
         {$rows.length} row(s) selected.
     </div>
+    <Button
+        variant="additive"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        >Add</Button
+    >
+    <Button
+        variant="update"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        disabled={!$hasPreviousPage}>Update</Button
+    >
+    <Button
+      variant="destructive"
+      size="sm"
+      on:click={() => ($pageIndex = $pageIndex - 1)}
+      disabled={!$hasPreviousPage}>Delete</Button
+    >
     <Button
       variant="outline"
       size="sm"

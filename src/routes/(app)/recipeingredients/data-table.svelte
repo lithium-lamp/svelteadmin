@@ -22,12 +22,12 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import DataTableCheckbox from "./data-table-checkbox.svelte";
 
-    type Availableitem = {
-        id: bigint;
-        knownitems_id: bigint;
+    type Recipeingredient = {
+        recipe_id: bigint;
+        ingredient_id: bigint;
         created_at: number;
-        expiration_at: number;
-        container_size: number;
+        amount: number;
+        measurement: bigint;
         version: number;
     };
     type Metadata = {
@@ -38,14 +38,14 @@
         total_records: number;
     };
 
-    export let availableitems : Availableitem[];
-    export let availableitems_metadata: Metadata;
+    export let recipeingredients : Recipeingredient[];
+    export let recipeingredients_metadata: Metadata;
 
-    console.log(availableitems_metadata.current_page + ", " + availableitems_metadata.page_size + ", " +
-    availableitems_metadata.first_page + ", " + availableitems_metadata.last_page + ", " +
-    availableitems_metadata.total_records);
+    console.log(recipeingredients_metadata.current_page + ", " + recipeingredients_metadata.page_size + ", " +
+    recipeingredients_metadata.first_page + ", " + recipeingredients_metadata.last_page + ", " +
+    recipeingredients_metadata.total_records);
 
-    const table = createTable(readable(availableitems), {
+    const table = createTable(readable(recipeingredients), {
         page: addPagination(),
         sort: addSortBy(),
         filter: addTableFilter({
@@ -56,9 +56,11 @@
         select: addSelectedRows(),
     });
 
+    let id: any;
+
     const columns = table.createColumns([
         table.column({
-            accessor: "id",
+            accessor: ({ recipe_id, ingredient_id }) => id,
             header: (_, { pluginStates }) => {
                 const { allPageRowsSelected } = pluginStates.select;
                 return createRender(DataTableCheckbox, {
@@ -83,18 +85,6 @@
             },
         }),
         table.column({
-            accessor: "knownitems_id",
-            header: "Knownitems id",
-            plugins: {
-                sort: {
-                    disable: false,
-                },
-                filter: {
-                    exclude: false,
-                },
-            },
-        }),
-        table.column({
             accessor: "created_at",
             header: "Created at",
             plugins: {
@@ -107,8 +97,8 @@
             },
         }),
         table.column({
-            accessor: "expiration_at",
-            header: "Expiration at",
+            accessor: "amount",
+            header: "Amount",
             plugins: {
                 sort: {
                     disable: false,
@@ -119,8 +109,8 @@
             },
         }),
         table.column({
-            accessor: "container_size",
-            header: "Container size",
+            accessor: "measurement",
+            header: "Measurement",
             plugins: {
                 sort: {
                     disable: false,
@@ -143,7 +133,7 @@
             },
         }),
         table.column({
-            accessor: ({ id }) => id,
+            accessor: ({ recipe_id, ingredient_id }) => [recipe_id, ingredient_id],
             header: "",
             cell: ({ value }) => {
                 return createRender(DataTableActions, { id: value });
@@ -181,7 +171,7 @@
         .filter(([, hide]) => !hide)
         .map(([id]) => id);
 
-    const hidableCols = ["knownitems_id", "created_at", "expiration_at", "container_size", "version"];
+    const hidableCols = ["created_at", "amount", "measurement", "version"];
 </script>
 
 <div class="w-full">
@@ -227,8 +217,8 @@
                         <div class="text-right">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "knownitems_id" || cell.id === "created_at"
-                    || cell.id === "expiration_at" || cell.id === "container_size"}
+                    {:else if cell.id === "created_at" || cell.id === "amount"
+                    || cell.id === "measurement"}
                       <Button variant="ghost" on:click={props.sort.toggle}>
                           <Render of={cell.render()} />
                           <ArrowUpDown class={"ml-2 h-4 w-4"} />
@@ -257,8 +247,8 @@
                         <div class="text-right font-medium">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "knownitems_id" || cell.id === "created_at"
-                    || cell.id === "expiration_at" || cell.id === "container_size"}
+                    {:else if cell.id === "created_at" || cell.id === "amount"
+                    || cell.id === "measurement"}
                         <div class="capitalize">
                             <Render of={cell.render()} />
                         </div>
@@ -279,6 +269,24 @@
         {Object.keys($selectedDataIds).length} of{" "}
         {$rows.length} row(s) selected.
     </div>
+    <Button
+        variant="additive"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        >Add</Button
+    >
+    <Button
+        variant="update"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        disabled={!$hasPreviousPage}>Update</Button
+    >
+    <Button
+      variant="destructive"
+      size="sm"
+      on:click={() => ($pageIndex = $pageIndex - 1)}
+      disabled={!$hasPreviousPage}>Delete</Button
+    >
     <Button
       variant="outline"
       size="sm"

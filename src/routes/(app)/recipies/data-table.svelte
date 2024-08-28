@@ -22,12 +22,15 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import DataTableCheckbox from "./data-table-checkbox.svelte";
 
-    type Recipeingredient = {
-        recipe_id: bigint;
-        ingredient_id: bigint;
+    type Recipe = {
+        id: bigint;
         created_at: number;
-        amount: number;
-        measurement: bigint;
+        name: string;
+        description: string;
+        cooking_steps: string[];
+        cook_time_minutes: number;
+        portions: number;
+        tags: string[];
         version: number;
     };
     type Metadata = {
@@ -38,14 +41,14 @@
         total_records: number;
     };
 
-    export let recipeingredients : Recipeingredient[];
-    export let recipeingredients_metadata: Metadata;
+    export let recipies: Recipe[];
+    export let recipies_metadata: Metadata;
 
-    console.log(recipeingredients_metadata.current_page + ", " + recipeingredients_metadata.page_size + ", " +
-    recipeingredients_metadata.first_page + ", " + recipeingredients_metadata.last_page + ", " +
-    recipeingredients_metadata.total_records);
+    console.log(recipies_metadata.current_page + ", " + recipies_metadata.page_size + ", " +
+      recipies_metadata.first_page + ", " + recipies_metadata.last_page + ", " +
+      recipies_metadata.total_records);
 
-    const table = createTable(readable(recipeingredients), {
+    const table = createTable(readable(recipies), {
         page: addPagination(),
         sort: addSortBy(),
         filter: addTableFilter({
@@ -56,11 +59,9 @@
         select: addSelectedRows(),
     });
 
-    let id: any;
-
     const columns = table.createColumns([
         table.column({
-            accessor: ({ recipe_id, ingredient_id }) => id,
+            accessor: "id",
             header: (_, { pluginStates }) => {
                 const { allPageRowsSelected } = pluginStates.select;
                 return createRender(DataTableCheckbox, {
@@ -97,8 +98,15 @@
             },
         }),
         table.column({
-            accessor: "amount",
-            header: "Amount",
+            accessor: "name",
+            header: "Name",
+            cell: ({ value }) => {
+                if ((value.length - 3) > 40) {
+                    return value.substring(0, 40) + "...";
+                }
+
+                return value;
+            },
             plugins: {
                 sort: {
                     disable: false,
@@ -109,8 +117,73 @@
             },
         }),
         table.column({
-            accessor: "measurement",
-            header: "Measurement",
+            accessor: "description",
+            header: "Description",
+            cell: ({ value }) => {
+                if ((value.length - 3) > 40) {
+                    return value.substring(0, 40) + "...";
+                }
+
+                return value;
+            },
+            plugins: {
+                sort: {
+                    disable: false,
+                },
+                filter: {
+                    exclude: false,
+                },
+            },
+        }),
+        table.column({
+            accessor: "cooking_steps",
+            header: "Cooking steps",
+            cell: ({ value }) => {
+                if ((value.toString().length - 3) > 40) {
+                    return value.toString().substring(0, 40) + "...";
+                }
+
+                return value.toString();
+            },
+            plugins: {
+                sort: {
+                    disable: false,
+                },
+                filter: {
+                    exclude: false,
+                },
+            },
+        }),
+        table.column({
+            accessor: "cook_time_minutes",
+            header: "Cook time minutes",
+            plugins: {
+                sort: {
+                    disable: false,
+                },
+                filter: {
+                    exclude: false,
+                },
+            },
+        }),
+        table.column({
+            accessor: "portions",
+            header: "Portions",
+            plugins: {
+                sort: {
+                    disable: false,
+                },
+                filter: {
+                    exclude: false,
+                },
+            },
+        }),
+        table.column({
+            accessor: "tags",
+            header: "Tags",
+            cell: ({ value }) => {
+              return value.toString();
+            },
             plugins: {
                 sort: {
                     disable: false,
@@ -133,7 +206,7 @@
             },
         }),
         table.column({
-            accessor: ({ recipe_id, ingredient_id }) => [recipe_id, ingredient_id],
+            accessor: ({ id }) => id,
             header: "",
             cell: ({ value }) => {
                 return createRender(DataTableActions, { id: value });
@@ -171,7 +244,8 @@
         .filter(([, hide]) => !hide)
         .map(([id]) => id);
 
-    const hidableCols = ["created_at", "amount", "measurement", "version"];
+    const hidableCols = ["created_at", "name", "description", "cooking_steps", 
+      "cook_time_minutes", "portions", "tags", "version"];
 </script>
 
 <div class="w-full">
@@ -217,12 +291,14 @@
                         <div class="text-right">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "created_at" || cell.id === "amount"
-                    || cell.id === "measurement"}
-                      <Button variant="ghost" on:click={props.sort.toggle}>
-                          <Render of={cell.render()} />
-                          <ArrowUpDown class={"ml-2 h-4 w-4"} />
-                      </Button>
+                      {:else if cell.id === "created_at" || cell.id === "name" 
+                      || cell.id === "description" || cell.id === "cooking_steps"
+                      || cell.id === "cook_time_minutes" || cell.id === "portions"
+                      || cell.id === "tags"}
+                        <Button variant="ghost" on:click={props.sort.toggle}>
+                            <Render of={cell.render()} />
+                            <ArrowUpDown class={"ml-2 h-4 w-4"} />
+                        </Button>
                     {:else}
                         <Render of={cell.render()} />
                     {/if}
@@ -247,8 +323,10 @@
                         <div class="text-right font-medium">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "created_at" || cell.id === "amount"
-                    || cell.id === "measurement"}
+                    {:else if cell.id === "created_at" || cell.id === "name" 
+                        || cell.id === "description" || cell.id === "cooking_steps"
+                        || cell.id === "cook_time_minutes" || cell.id === "portions"
+                        || cell.id === "tags"}
                         <div class="capitalize">
                             <Render of={cell.render()} />
                         </div>
@@ -269,6 +347,24 @@
         {Object.keys($selectedDataIds).length} of{" "}
         {$rows.length} row(s) selected.
     </div>
+    <Button
+        variant="additive"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        >Add</Button
+    >
+    <Button
+        variant="update"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        disabled={!$hasPreviousPage}>Update</Button
+    >
+    <Button
+      variant="destructive"
+      size="sm"
+      on:click={() => ($pageIndex = $pageIndex - 1)}
+      disabled={!$hasPreviousPage}>Delete</Button
+    >
     <Button
       variant="outline"
       size="sm"

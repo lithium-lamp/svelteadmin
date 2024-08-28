@@ -22,15 +22,11 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import DataTableCheckbox from "./data-table-checkbox.svelte";
 
-    type Recipe = {
+    type Tag = {
         id: bigint;
         created_at: number;
+        itemtype: bigint;
         name: string;
-        description: string;
-        cooking_steps: string[];
-        cook_time_minutes: number;
-        portions: number;
-        tags: string[];
         version: number;
     };
     type Metadata = {
@@ -41,14 +37,14 @@
         total_records: number;
     };
 
-    export let recipies: Recipe[];
-    export let recipies_metadata: Metadata;
+    export let tags : Tag[];
+    export let tags_metadata: Metadata;
 
-    console.log(recipies_metadata.current_page + ", " + recipies_metadata.page_size + ", " +
-      recipies_metadata.first_page + ", " + recipies_metadata.last_page + ", " +
-      recipies_metadata.total_records);
+    console.log(tags_metadata.current_page + ", " + tags_metadata.page_size + ", " +
+    tags_metadata.first_page + ", " + tags_metadata.last_page + ", " +
+    tags_metadata.total_records);
 
-    const table = createTable(readable(recipies), {
+    const table = createTable(readable(tags), {
         page: addPagination(),
         sort: addSortBy(),
         filter: addTableFilter({
@@ -98,92 +94,20 @@
             },
         }),
         table.column({
+            accessor: "itemtype",
+            header: "Item type",
+            plugins: {
+                sort: {
+                    disable: false,
+                },
+                filter: {
+                    exclude: false,
+                },
+            },
+        }),
+        table.column({
             accessor: "name",
             header: "Name",
-            cell: ({ value }) => {
-                if ((value.length - 3) > 40) {
-                    return value.substring(0, 40) + "...";
-                }
-
-                return value;
-            },
-            plugins: {
-                sort: {
-                    disable: false,
-                },
-                filter: {
-                    exclude: false,
-                },
-            },
-        }),
-        table.column({
-            accessor: "description",
-            header: "Description",
-            cell: ({ value }) => {
-                if ((value.length - 3) > 40) {
-                    return value.substring(0, 40) + "...";
-                }
-
-                return value;
-            },
-            plugins: {
-                sort: {
-                    disable: false,
-                },
-                filter: {
-                    exclude: false,
-                },
-            },
-        }),
-        table.column({
-            accessor: "cooking_steps",
-            header: "Cooking steps",
-            cell: ({ value }) => {
-                if ((value.toString().length - 3) > 40) {
-                    return value.toString().substring(0, 40) + "...";
-                }
-
-                return value.toString();
-            },
-            plugins: {
-                sort: {
-                    disable: false,
-                },
-                filter: {
-                    exclude: false,
-                },
-            },
-        }),
-        table.column({
-            accessor: "cook_time_minutes",
-            header: "Cook time minutes",
-            plugins: {
-                sort: {
-                    disable: false,
-                },
-                filter: {
-                    exclude: false,
-                },
-            },
-        }),
-        table.column({
-            accessor: "portions",
-            header: "Portions",
-            plugins: {
-                sort: {
-                    disable: false,
-                },
-                filter: {
-                    exclude: false,
-                },
-            },
-        }),
-        table.column({
-            accessor: "tags",
-            header: "Tags",
-            cell: ({ value }) => {
-              return value.toString();
-            },
             plugins: {
                 sort: {
                     disable: false,
@@ -244,8 +168,7 @@
         .filter(([, hide]) => !hide)
         .map(([id]) => id);
 
-    const hidableCols = ["created_at", "name", "description", "cooking_steps", 
-      "cook_time_minutes", "portions", "tags", "version"];
+    const hidableCols = ["created_at", "itemtype", "name", "version"];
 </script>
 
 <div class="w-full">
@@ -291,14 +214,12 @@
                         <div class="text-right">
                             <Render of={cell.render()} />
                         </div>
-                      {:else if cell.id === "created_at" || cell.id === "name" 
-                      || cell.id === "description" || cell.id === "cooking_steps"
-                      || cell.id === "cook_time_minutes" || cell.id === "portions"
-                      || cell.id === "tags"}
-                        <Button variant="ghost" on:click={props.sort.toggle}>
-                            <Render of={cell.render()} />
-                            <ArrowUpDown class={"ml-2 h-4 w-4"} />
-                        </Button>
+                    {:else if cell.id === "created_at" || cell.id === "itemtype"
+                    || cell.id === "name"}
+                      <Button variant="ghost" on:click={props.sort.toggle}>
+                          <Render of={cell.render()} />
+                          <ArrowUpDown class={"ml-2 h-4 w-4"} />
+                      </Button>
                     {:else}
                         <Render of={cell.render()} />
                     {/if}
@@ -323,10 +244,8 @@
                         <div class="text-right font-medium">
                             <Render of={cell.render()} />
                         </div>
-                    {:else if cell.id === "created_at" || cell.id === "name" 
-                        || cell.id === "description" || cell.id === "cooking_steps"
-                        || cell.id === "cook_time_minutes" || cell.id === "portions"
-                        || cell.id === "tags"}
+                    {:else if cell.id === "created_at" || cell.id === "itemtype"
+                    || cell.id === "name"}
                         <div class="capitalize">
                             <Render of={cell.render()} />
                         </div>
@@ -347,6 +266,24 @@
         {Object.keys($selectedDataIds).length} of{" "}
         {$rows.length} row(s) selected.
     </div>
+    <Button
+        variant="additive"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        >Add</Button
+    >
+    <Button
+        variant="update"
+        size="sm"
+        on:click={() => ($pageIndex = $pageIndex - 1)}
+        disabled={!$hasPreviousPage}>Update</Button
+    >
+    <Button
+      variant="destructive"
+      size="sm"
+      on:click={() => ($pageIndex = $pageIndex - 1)}
+      disabled={!$hasPreviousPage}>Delete</Button
+    >
     <Button
       variant="outline"
       size="sm"
