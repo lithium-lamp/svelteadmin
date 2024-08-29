@@ -28,7 +28,7 @@
 			class="absolute inset-0 bg-cover"
 			style="
 				background-image:
-					url(https://designerapp.officeapps.live.com/designerapp/document.ashx?path=/97da910a-685b-4060-8593-e7f8af7aca0a/DallEGeneratedImages/dalle-00809646-f535-4e00-b479-b9a4c16366300251677466304819928600.jpg&dcHint=FranceCentral&fileToken=84a942b4-7d8b-4c11-94b4-abbe93ae2b08&auto=format&fit=crop&w=1376&q=80);"
+					url(Designer.jpeg);"
 		/>
 		<div class="relative z-20 mt-auto">
 			<blockquote class="space-y-2">
