@@ -7,8 +7,14 @@
 	import Moon from "svelte-radix/Moon.svelte";
 	import { ModeWatcher, resetMode, setMode, toggleMode } from "mode-watcher";
 	import { Button } from "$lib/components/ui/button";
+
+	let isLoggedIn = false;
 </script>
 
+{#if !isLoggedIn}
+	<p>You are not logged in</p>
+{/if}
+{#if isLoggedIn}
 <ModeWatcher />
 <div class="hidden md:block">
 	<Menu />
@@ -34,3 +40,4 @@
 		</div>
 	</div>
 </div>
+{/if}

@@ -44,11 +44,7 @@
 
     export let knownitems : Knownitem[];
     export let knownitems_metadata: Metadata;
-
-    console.log(knownitems_metadata.current_page + ", " + knownitems_metadata.page_size + ", " +
-    knownitems_metadata.first_page + ", " + knownitems_metadata.last_page + ", " +
-    knownitems_metadata.total_records);
-
+    
     const table = createTable(readable(knownitems), {
         page: addPagination(),
         sort: addSortBy(),

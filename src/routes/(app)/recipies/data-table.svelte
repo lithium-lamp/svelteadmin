@@ -44,10 +44,6 @@
     export let recipies: Recipe[];
     export let recipies_metadata: Metadata;
 
-    console.log(recipies_metadata.current_page + ", " + recipies_metadata.page_size + ", " +
-      recipies_metadata.first_page + ", " + recipies_metadata.last_page + ", " +
-      recipies_metadata.total_records);
-
     const table = createTable(readable(recipies), {
         page: addPagination(),
         sort: addSortBy(),

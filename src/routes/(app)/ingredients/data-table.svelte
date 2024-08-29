@@ -40,10 +40,6 @@
     export let ingredients : Ingredient[];
     export let ingredients_metadata: Metadata;
 
-    console.log(ingredients_metadata.current_page + ", " + ingredients_metadata.page_size + ", " +
-    ingredients_metadata.first_page + ", " + ingredients_metadata.last_page + ", " +
-    ingredients_metadata.total_records);
-
     const table = createTable(readable(ingredients), {
         page: addPagination(),
         sort: addSortBy(),

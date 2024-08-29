@@ -10,14 +10,17 @@
 
 <main>
     <div>
-        <pre>cmdline: {JSON.stringify($data.cmdline, undefined, 2)}</pre>
-        <pre>database: {JSON.stringify($data.database, undefined, 2)}</pre>
-        <pre>goroutines: {JSON.stringify($data.goroutines, undefined, 2)}</pre>
-        <!--<pre>memstats: {}</pre>-->
-        <pre>total_processing_time_μs: {JSON.stringify($data.total_processing_time_μs, undefined, 2)}</pre>
-        <pre>total_requests_received: {JSON.stringify($data.total_requests_received, undefined, 2)}</pre>        
-        <pre>total_responses_sent: {JSON.stringify($data.total_responses_sent, undefined, 2)}</pre>        
-        <pre>total_responses_sent_by_status: {JSON.stringify($data.total_responses_sent_by_status, undefined, 2)}</pre>        
-        <pre>version: {JSON.stringify($data.version, undefined, 2)}</pre>        
+    {#await JSON.stringify($data, undefined, 2) then name}
+        <pre>
+            cmdline: {JSON.stringify(JSON.parse(name).cmdline, undefined, 2)}
+            database: {JSON.stringify(JSON.parse(name).database, undefined, 2)}
+            goroutines: {JSON.stringify(JSON.parse(name).goroutines, undefined, 2)}
+            total_processing_time_μs: {JSON.stringify(JSON.parse(name).total_processing_time_μs, undefined, 2)}
+            total_requests_received: {JSON.stringify(JSON.parse(name).total_requests_received, undefined, 2)}
+            total_responses_sent: {JSON.stringify(JSON.parse(name).total_responses_sent, undefined, 2)}
+            total_responses_sent_by_status: {JSON.stringify(JSON.parse(name).total_responses_sent_by_status, undefined, 2)}
+            version: {JSON.stringify(JSON.parse(name).version, undefined, 2)}
+        </pre>
+    {/await}
     </div>
 </main>

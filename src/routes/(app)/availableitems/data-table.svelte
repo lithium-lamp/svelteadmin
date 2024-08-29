@@ -41,10 +41,6 @@
     export let availableitems : Availableitem[];
     export let availableitems_metadata: Metadata;
 
-    console.log(availableitems_metadata.current_page + ", " + availableitems_metadata.page_size + ", " +
-    availableitems_metadata.first_page + ", " + availableitems_metadata.last_page + ", " +
-    availableitems_metadata.total_records);
-
     const table = createTable(readable(availableitems), {
         page: addPagination(),
         sort: addSortBy(),

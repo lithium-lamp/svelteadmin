@@ -39,10 +39,6 @@
     export let measurements : Measurement[];
     export let measurements_metadata: Metadata;
 
-    console.log(measurements_metadata.current_page + ", " + measurements_metadata.page_size + ", " +
-    measurements_metadata.first_page + ", " + measurements_metadata.last_page + ", " +
-    measurements_metadata.total_records);
-
     const table = createTable(readable(measurements), {
         page: addPagination(),
         sort: addSortBy(),

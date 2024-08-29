@@ -21,7 +21,6 @@ export const actions = {
       cookies.set('Authorization', `Bearer ${json.authentication_token.token}`, {
             path: '/',
             expires: new Date(`${json.authentication_token.expiry}`),
-            httpOnly: false,
         },
       );
 

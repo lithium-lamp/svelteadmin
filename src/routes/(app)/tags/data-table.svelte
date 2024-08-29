@@ -17,10 +17,55 @@
     import ChevronDown from "lucide-svelte/icons/chevron-down";
     import * as Table from "$lib/components/ui/table";
     import DataTableActions from "./data-table-actions.svelte";
-    import { Button } from "$lib/components/ui/button";
+    import { Button, buttonVariants } from "$lib/components/ui/button";
     import { Input } from "$lib/components/ui/input";
+    import { Label } from "$lib/components/ui/label";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import DataTableCheckbox from "./data-table-checkbox.svelte";
+    import * as Dialog from "$lib/components/ui/dialog";
+
+    import Check from "svelte-radix/Check.svelte";
+    import CaretSort from "svelte-radix/CaretSort.svelte";
+    import { tick } from "svelte";
+    import * as Command from "$lib/components/ui/command";
+    import * as Popover from "$lib/components/ui/popover";
+    import { cn } from "$lib/utils.js";
+
+    const frameworks = [
+    {
+      value: "sveltekit",
+      label: "SvelteKit"
+    },
+    {
+      value: "next.js",
+      label: "Next.js"
+    },
+    {
+      value: "nuxt.js",
+      label: "Nuxt.js"
+    },
+    {
+      value: "remix",
+      label: "Remix"
+    },
+    {
+      value: "astro",
+      label: "Astro"
+    }
+  ];
+
+    let open = false;
+    let value = "";
+
+    $: selectedValue =
+    frameworks.find((f) => f.value === value)?.label ?? "Select a framework...";
+
+    function closeAndFocusTrigger(triggerId: string) {
+      open = false;
+      tick().then(() => {
+        document.getElementById(triggerId)?.focus();
+      });
+    }
 
     type Tag = {
         id: bigint;
@@ -39,10 +84,6 @@
 
     export let tags : Tag[];
     export let tags_metadata: Metadata;
-
-    console.log(tags_metadata.current_page + ", " + tags_metadata.page_size + ", " +
-    tags_metadata.first_page + ", " + tags_metadata.last_page + ", " +
-    tags_metadata.total_records);
 
     const table = createTable(readable(tags), {
         page: addPagination(),
@@ -266,24 +307,77 @@
         {Object.keys($selectedDataIds).length} of{" "}
         {$rows.length} row(s) selected.
     </div>
-    <Button
-        variant="additive"
-        size="sm"
-        on:click={() => ($pageIndex = $pageIndex - 1)}
-        >Add</Button
-    >
-    <Button
-        variant="update"
-        size="sm"
-        on:click={() => ($pageIndex = $pageIndex - 1)}
-        disabled={!$hasPreviousPage}>Update</Button
-    >
-    <Button
-      variant="destructive"
-      size="sm"
-      on:click={() => ($pageIndex = $pageIndex - 1)}
-      disabled={!$hasPreviousPage}>Delete</Button
-    >
+    <div class="text-muted-foreground flex-1 text-sm">
+      Current page {tags_metadata.current_page}/{tags_metadata.last_page}.
+    </div>
+    <Dialog.Root>
+      <Dialog.Trigger class={buttonVariants({ variant: "additive" })}
+        >Add</Dialog.Trigger>
+      <Dialog.Content class="sm:max-w-[425px]">
+        <Dialog.Header>
+          <Dialog.Title>Add tag</Dialog.Title>
+          <Dialog.Description>
+            Input values for new tag.
+          </Dialog.Description>
+        </Dialog.Header>
+        <div class="grid gap-4 py-4">
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="itemtype" class="text-right">Item type</Label>
+            <Input id="itemtype" value="" class="col-span-3" />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="tagname" class="text-right">Name</Label>
+            <Input id="tagname" value="" class="col-span-3" />
+          </div>
+        </div>
+        <Dialog.Footer>
+          <Button variant="additive" type="submit">Add tag</Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
+    <Dialog.Root>
+      <Dialog.Trigger class={buttonVariants({ variant: "update" })}
+        >Update</Dialog.Trigger
+      >
+      <Dialog.Content class="sm:max-w-[425px]">
+        <Dialog.Header>
+          <Dialog.Title>Update tag</Dialog.Title>
+          <Dialog.Description>
+            Input new values for selected tag.
+          </Dialog.Description>
+        </Dialog.Header>
+        <div class="grid gap-4 py-4">
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="itemtypeupdate" class="text-right">Item type</Label>
+            <Input id="itemtypeupdate" value="" class="col-span-3" />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="tagnameupdate" class="text-right">Name</Label>
+            <Input id="tagnameupdate" value="" class="col-span-3" />
+          </div>
+        </div>
+        <Dialog.Footer>
+          <Button variant="update" type="submit">Update tag</Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
+    <Dialog.Root>
+      <Dialog.Trigger class={buttonVariants({ variant: "destructive" })}
+        >Delete</Dialog.Trigger
+      >
+      <Dialog.Content class="sm:max-w-[425px]">
+        <Dialog.Header>
+          <Dialog.Title>Delete tags</Dialog.Title>
+          <Dialog.Description>
+            Delete selected tags.
+          </Dialog.Description>
+        </Dialog.Header>
+        
+        <Dialog.Footer>
+          <Button variant="destructive" type="submit">Delete tags</Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
     <Button
       variant="outline"
       size="sm"

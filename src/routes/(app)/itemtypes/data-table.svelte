@@ -39,10 +39,6 @@
     export let itemtypes : ItemType[];
     export let itemtypes_metadata: Metadata;
 
-    console.log(itemtypes_metadata.current_page + ", " + itemtypes_metadata.page_size + ", " +
-    itemtypes_metadata.first_page + ", " + itemtypes_metadata.last_page + ", " +
-    itemtypes_metadata.total_records);
-
     const table = createTable(readable(itemtypes), {
         page: addPagination(),
         sort: addSortBy(),
